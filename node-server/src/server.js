@@ -1,12 +1,16 @@
 const express = require("express");
+const path = require("path");
 const fs = require("fs");
 
 const app = express();
 const port = 3007;
 
 const navigation = `
-<a href="/">home</a>
-<a href="/files">files</a>
+<ul>
+    <a href="/">home</a>
+    <a href="/files">files</a>
+    <a href="/upload">upload</a>
+</ul>
 `;
 
 app.get("/", (_, res) => {
@@ -27,10 +31,21 @@ app.get("/files", (_, res) => {
     res.end();
 });
 
+app.get("/upload", (_, res) => {
+    let content = `<input type="file" id="file" name="file" accept="*/*" />`;
+    // TODO: add button to pass filename to other route and save it to the disk there
+
+    const selectedFile = document.getElementById("input").files[0];
+    console.log(selectedFile);
+
+    res.send(navigation + content);
+    res.end();
+});
+
 app.get("/delete/*", (req, res) => {
     let content = "";
 
-    const filepath = process.cwd() + req.params[0];
+    const filepath = path.join(process.cwd(), req.params[0]);
     if (!fs.existsSync(filepath))
         res.send(`${filepath} does not exist anymore.`).end();
 
@@ -38,9 +53,7 @@ app.get("/delete/*", (req, res) => {
         if (err) {
             return console.error(err);
         }
-        console.log("File deleted successfully!");
-
-        content += `${Deleted} ${filepath}`;
+        content += `<span>Deleted ${filepath} deleted successfully!</span>`;
     });
 
     res.send(navigation + content);
