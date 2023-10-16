@@ -1,0 +1,5 @@
+# Editor directories and files
+.vscode/
+
+# Javascript/Frontend
+node-server/node_modules/
