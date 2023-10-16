@@ -1,8 +1,10 @@
 # Coding Challange
 
-From a company in a galaxy far, far away...
+- Have node 18 installed.
+- Change into `./node-server/`
+- Run `npm start` or `node node-server/src/server.js`.
 
-Challenge #1
+## Challenge #1
 Build a small server in Node.js that stores files and handles their access.
 
 Technology stack:
@@ -15,7 +17,7 @@ The service has an endpoint to get the most recent file
 (Optional) The service has an endpoint for replacing a file
 The files can be stored on the file system for simplicity reasons.
 
-Challenge #2
+## Challenge #2
 Build a small web application where you can play tic tac toe.
 
 https://en.wikipedia.org/wiki/Tic-tac-toe
