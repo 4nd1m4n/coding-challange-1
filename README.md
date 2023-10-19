@@ -8,11 +8,12 @@ Technology stack:
 Nodej.js
 JS
 Service requirements:
-- [ ] The service has an endpoint for uploading new files
-- [ ] The service has an endpoint to get the most recent file
-- [ ] (Optional) The service has an endpoint for deleting a file
+- [X] The service has an endpoint for uploading new files
+- [X] The service has an endpoint to get the most recent file
+- [X] (Optional) The service has an endpoint for deleting a file
 - [ ] (Optional) The service has an endpoint for replacing a file
 The files can be stored on the file system for simplicity reasons.
+
 
 _To see it running_:
 - Have node 18 installed.
@@ -35,6 +36,7 @@ Requirements:
 - [X] The game displays who won
 - [X] The game offers the possibility to start a new game
 No special multiplayer handling: Two players can play this game by just using the same input device (e.g. mouse)
+
 
 _To see it running_:
 - Open `react-ttt/index.html` in your browser (drag and drop)
