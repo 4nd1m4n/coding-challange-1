@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello Tic Tac Joe</title>
+
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+
+    <!-- util -->
+    <script type="text/babel">
+        function transpose(matrix) {
+            return matrix[0].map((_, i) => matrix.map((row) => row[i]));
+        }
+
+        function diagonals(matrix) {
+            const maxI = matrix.length - 1;
+
+            const slash = matrix.map((_, i) => matrix[maxI - i][i]);
+            const backslash = matrix.map((_, i) => matrix[i][i]);
+
+            return [slash, backslash];
+        }
+    </script>
+
+    <!-- const -->
+    <script type="text/babel">
+        const boardRowLength = 3;
+        const Occupation = {
+            Empty: "-",
+            Nought: "O",
+            Cross: "X",
+        };
+    </script>
+
+    <!-- board -->
+    <script type="text/babel">
+        class Board {
+            constructor(board) {
+                this._board =
+                    board === undefined ? Board.emptyBoard() : board;
+            }
+
+            get board() {
+                return this._board;
+            }
+
+            occupied(row, column) {
+                return this._board[row][column] !== Occupation.Empty;
+            }
+
+            toggleField(row, column, occupancy) {
+                this._board[row][column] = occupancy;
+            }
+
+            static emptyBoard() {
+                const emptyRow = [...Array(boardRowLength).keys()].map(
+                    () => Occupation.Empty
+                );
+
+                return [...Array(boardRowLength).keys()].map(() => [
+                    ...emptyRow,
+                ]);
+            }
+        }
+    </script>
+
+    <!-- game -->
+    <script type="text/babel">
+        class Game {
+            _resetGame() {
+                this._board = new Board();
+                this._player = Occupation.Cross;
+                this._winner = Occupation.Empty;
+                this._lost = false;
+            }
+
+            resetGame() {
+                this._resetGame();
+                render();
+            }
+
+            constructor() {
+                this._resetGame();
+            }
+
+            get board() {
+                return this._board;
+            }
+            get player() {
+                return this._player;
+            }
+            get winner() {
+                return this._winner;
+            }
+            get lost() {
+                return this._lost;
+            }
+
+            occupyField(rowIndex, columnIndex) {
+                if (this.board.occupied(rowIndex, columnIndex)) {
+                    alert("Already occupied.");
+                    return;
+                }
+
+                this.board.toggleField(rowIndex, columnIndex, this.player);
+
+                if (this.won()) this._winner = this.player;
+
+                this.switchPlayer();
+                render();
+            }
+
+            switchPlayer() {
+                this._player =
+                    this.player === Occupation.Cross
+                        ? Occupation.Nought
+                        : Occupation.Cross;
+            }
+
+            won() {
+                const rowMatch = this._board.board.map((row) =>
+                    row.every(
+                        (field) =>
+                            row[0] !== Occupation.Empty && field === row[0]
+                    )
+                );
+                const columnMatch = transpose(this._board.board).map(
+                    (col) =>
+                        col.every(
+                            (field) =>
+                                col[0] !== Occupation.Empty &&
+                                field === col[0]
+                        )
+                );
+                const diagonalMatch = diagonals(this._board.board).map(
+                    (diagonal) =>
+                        diagonal.every(
+                            (field) =>
+                                diagonal[0] !== Occupation.Empty &&
+                                field === diagonal[0]
+                        )
+                );
+
+                // identity (to unpack booleans)
+                const I = (v) => v;
+                return (
+                    rowMatch.some(I) ||
+                    columnMatch.some(I) ||
+                    diagonalMatch.some(I)
+                );
+            }
+        }
+    </script>
+
+    <!-- render -->
+    <script type="text/babel">
+        function renderBoard(board) {
+            return board.map((row, rowIndex) => {
+                const row_ = row.map((field, columnIndex) => {
+                    const field_ = (
+                        <button
+                            style={{ width: "50px", height: "50px" }}
+                            key={rowIndex + ", " + columnIndex}
+                            onClick={() =>
+                                game.occupyField(rowIndex, columnIndex)
+                            }
+                        >
+                            {field}
+                        </button>
+                    );
+                    return field_;
+                });
+
+                return (
+                    <div
+                        style={{ display: "flex", flexDirection: "row" }}
+                        key={rowIndex}
+                    >
+                        {row_}
+                    </div>
+                );
+            });
+        }
+
+        function renderInfo(game) {
+            return (
+                <div style={{ marginTop: "20px" }}>
+                    <div>Player: {game.player}</div>
+
+                    {game.winner !== Occupation.Empty && (
+                        <div style={{ color: 'green' }}>Winner: {game.winner}</div>
+                    )}
+
+                    <button onClick={() => game.resetGame()}>
+                        New Game
+                    </button>
+                </div>
+            );
+        }
+    </script>
+
+    <!-- lifecycle -->
+    <script type="text/babel">
+        const game = new Game();
+
+        function render() {
+            const _board = renderBoard(game.board.board);
+            const _info = renderInfo(game);
+
+            const rendered = [_board, _info];
+
+            ReactDOM.render(rendered, document.getElementById("app"));
+        }
+
+        render();
+    </script>
+</head>
+
+<body>
+    <div id="app"></div>
+</body>
+
+</html>
