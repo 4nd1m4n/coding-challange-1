@@ -18,6 +18,7 @@ The files can be stored on the file system for simplicity reasons.
 _To see it running_:
 - Have node 18 installed.
 - Change into `./node-server/`
+- Run `npm install`
 - Run `npm start` or `node node-server/src/server.js`.
 
 
